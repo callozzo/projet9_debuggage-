@@ -10,28 +10,26 @@ import "./style.css";
 const PER_PAGE = 9;
 
 const EventList = () => {
-  const { data, error } = useData();
+  const {data, error} = useData();
   const [type, setType] = useState();
   const [currentPage, setCurrentPage] = useState(1);
+  // Filtrer les événements par type
   const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
-  ).filter((event, index) => {
-    if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
-    ) {
-      return true;
+    data?.events || []
+  ).filter((event) => {
+    // Filtrer par type si un type est sélectionné
+    if (type && event.type !== type) {
+      return false; // Exclure les événements ne correspondant pas au type
     }
-    return false;
+    return true; // Inclure les événements valides
   });
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
   };
-  const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
+  const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE);
   const typeList = new Set(data?.events.map((event) => event.type));
+
   return (
     <>
       {error && <div>An error occured</div>}
